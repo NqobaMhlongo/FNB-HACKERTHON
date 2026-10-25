@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Path2Work: Prove Before Hire{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        build: '#635BFF',
+                        prove: '#14967F',
+                        match: '#E66C37',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-full flex flex-col text-slate-800 antialiased">
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-6">
+                <a href="{{ url_for('index') }}" class="flex items-center space-x-2.5 group">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-build via-prove to-match flex items-center justify-center font-extrabold text-white text-lg shadow">
+                        P2W
+                    </div>
+                    <div>
+                        <span class="font-bold text-lg tracking-tight text-white">Path2Work</span>
+                        <span class="hidden sm:inline-block text-xs uppercase tracking-widest px-2 py-0.5 rounded bg-slate-800 text-teal-300 ml-1.5 border border-slate-700">
+                            Prove Before Hire
+                        </span>
+                    </div>
+                </a>
+
+                {% if current_user %}
+                <nav class="hidden md:flex items-center space-x-4 text-sm font-medium">
+                    {% if current_user.role == 'candidate' %}
+                        <a href="{{ url_for('candidate.dashboard') }}" class="px-3 py-1.5 rounded-md hover:bg-slate-800 transition">
+                            Candidate Dashboard
+                        </a>
+                        <a href="{{ url_for('candidate.skills_passport', user_id=current_user.id) }}" class="px-3 py-1.5 rounded-md hover:bg-slate-800 text-teal-300 transition">
+                            My Skills Passport
+                        </a>
+                    {% elif current_user.role == 'employer' %}
+                        <a href="{{ url_for('employer.dashboard') }}" class="px-3 py-1.5 rounded-md hover:bg-slate-800 transition">
+                            Talent Readiness Pipeline
+                        </a>
+                    {% endif %}
+                </nav>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center space-x-3">
+                {% if current_user %}
+                    <span class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold
+                        {% if current_user.role == 'employer' %}bg-match/20 text-orange-300 border border-match/40{% else %}bg-build/20 text-indigo-300 border border-build/40{% endif %}">
+                        {{ current_user.role | capitalize }}
+                    </span>
+                    <span class="text-sm text-slate-300 hidden md:inline">{{ current_user.full_name }}</span>
+                    <a href="{{ url_for('auth.logout') }}" class="text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-md border border-slate-700 transition">
+                        Sign Out
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="text-sm font-medium text-slate-200 hover:text-white px-3 py-1.5">
+                        Sign In
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="text-sm font-semibold bg-build hover:bg-indigo-600 text-white px-4 py-1.5 rounded-md shadow transition">
+                        Get Verified
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="space-y-2">
+                    {% for category, message in messages %}
+                        <div class="p-4 rounded-lg border flex items-center justify-between text-sm font-medium shadow-sm
+                            {% if category == 'success' %}bg-emerald-50 border-emerald-300 text-emerald-900
+                            {% elif category == 'error' %}bg-red-50 border-red-300 text-red-900
+                            {% elif category == 'warning' %}bg-amber-50 border-amber-300 text-amber-900
+                            {% else %}bg-indigo-50 border-indigo-200 text-indigo-900{% endif %}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
+            <p><strong class="text-slate-700">Path2Work South Africa</strong> — "A CV says what you know. Path2Work shows what you can do."</p>
+            <div class="flex space-x-4 mt-2 sm:mt-0">
+                <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-build mr-1.5"></span>Build</span>
+                <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-prove mr-1.5"></span>Prove</span>
+                <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-match mr-1.5"></span>Match</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

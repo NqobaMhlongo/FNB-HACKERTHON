@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}Sign In | Path2Work{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- Left Column: Brand Value Proposition & 1-Click Demo Selector -->
+    <div class="lg:col-span-7 space-y-6">
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-prove/10 border border-prove/30 text-prove text-xs font-bold uppercase tracking-wider">
+            <span>Early-Career IT Readiness &amp; Verified Talent</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+            A CV says what you know.<br>
+            <span class="text-build">Path2Work</span> shows what you can <span class="text-prove underline decoration-match">do</span>.
+        </h1>
+        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+            South African final-year IT students and recent graduates prove job readiness through realistic
+            <strong>Build → Explain → Adapt</strong> WorkProof challenges to unlock a 5-tier verifiable Skills Passport.
+        </p>
+
+        <!-- Quick Demo Login Helper Card -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    1-Click Demo Accounts (Password: <code class="text-slate-900 font-bold">password123</code>)
+                </h3>
+                <span class="text-xs text-prove font-semibold">Click any card to auto-fill →</span>
+            </div>
+
+            <!-- Employer Demo Accounts -->
+            <div>
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Employer Talent Pipeline Accounts</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                    <button type="button" onclick="fillDemo('talent@paystack-sa.co.za')"
+                        class="text-left p-3 rounded-xl border border-match/40 bg-orange-50/60 hover:bg-orange-100/70 transition">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-900">Nomsa Dlamini</span>
+                            <span class="px-2 py-0.5 rounded bg-match text-white font-bold text-[10px]">EMPLOYER</span>
+                        </div>
+                        <div class="text-match font-semibold mt-0.5">PayFlow FinTech SA (3 Shortlisted)</div>
+                        <div class="text-slate-500 truncate">talent@paystack-sa.co.za</div>
+                    </button>
+
+                    <button type="button" onclick="fillDemo('careers@cloudsmiths.co.za')"
+                        class="text-left p-3 rounded-xl border border-match/40 bg-orange-50/60 hover:bg-orange-100/70 transition">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-900">Gareth Naidoo</span>
+                            <span class="px-2 py-0.5 rounded bg-match text-white font-bold text-[10px]">EMPLOYER</span>
+                        </div>
+                        <div class="text-match font-semibold mt-0.5">CloudSmiths South Africa</div>
+                        <div class="text-slate-500 truncate">careers@cloudsmiths.co.za</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Candidate Demo Accounts Across All 5 Trust Tiers -->
+            <div>
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Candidate Accounts (Trust Levels 1 to 5)</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                    <button type="button" onclick="fillDemo('sipho.dlamini@richfield.ac.za')"
+                        class="text-left p-2.5 rounded-xl border border-emerald-400 bg-emerald-50/70 hover:bg-emerald-100/70 transition">
+                        <div class="flex justify-between font-bold text-slate-900">
+                            <span>Sipho Dlamini (Richfield)</span>
+                            <span class="text-emerald-700">Lvl 5 • 94%</span>
+                        </div>
+                        <div class="text-slate-600">Software Dev + Cloud • Employer Verified</div>
+                    </button>
+
+                    <button type="button" onclick="fillDemo('zanele.khumalo@wits.ac.za')"
+                        class="text-left p-2.5 rounded-xl border border-prove/40 bg-teal-50/60 hover:bg-teal-100/70 transition">
+                        <div class="flex justify-between font-bold text-slate-900">
+                            <span>Zanele Khumalo (Wits)</span>
+                            <span class="text-prove">Lvl 4 • 89%</span>
+                        </div>
+                        <div class="text-slate-600">Junior Data Analyst • Verified</div>
+                    </button>
+
+                    <button type="button" onclick="fillDemo('thabo.nkosi@uct.ac.za')"
+                        class="text-left p-2.5 rounded-xl border border-prove/40 bg-teal-50/60 hover:bg-teal-100/70 transition">
+                        <div class="flex justify-between font-bold text-slate-900">
+                            <span>Thabo Nkosi (UCT)</span>
+                            <span class="text-prove">Lvl 4 • 86%</span>
+                        </div>
+                        <div class="text-slate-600">Junior Software Developer • Verified</div>
+                    </button>
+
+                    <button type="button" onclick="fillDemo('pieter.vdm@sun.ac.za')"
+                        class="text-left p-2.5 rounded-xl border border-prove/40 bg-teal-50/60 hover:bg-teal-100/70 transition">
+                        <div class="flex justify-between font-bold text-slate-900">
+                            <span>Pieter van der Merwe (SUN)</span>
+                            <span class="text-prove">Lvl 4 • 82%</span>
+                        </div>
+                        <div class="text-slate-600">IT Support / Cloud • Verified</div>
+                    </button>
+
+                    <button type="button" onclick="fillDemo('ayanda.zulu@dut.ac.za')"
+                        class="text-left p-2.5 rounded-xl border border-prove/40 bg-teal-50/60 hover:bg-teal-100/70 transition">
+                        <div class="flex justify-between font-bold text-slate-900">
+                            <span>Ayanda Zulu (DUT)</span>
+                            <span class="text-prove">Lvl 4 • 78%</span>
+                        </div>
+                        <div class="text-slate-600">Junior Software Developer • Verified</div>
+                    </button>
+
+                    <button type="button" onclick="fillDemo('amahle.ndlovu@ukzn.ac.za')"
+                        class="text-left p-2.5 rounded-xl border border-build/40 bg-indigo-50/60 hover:bg-indigo-100/70 transition">
+                        <div class="flex justify-between font-bold text-slate-900">
+                            <span>Amahle Ndlovu (UKZN)</span>
+                            <span class="text-build">Lvl 3 • 64%</span>
+                        </div>
+                        <div class="text-slate-600">Data Analyst • Source Verified (Needs 6 pts)</div>
+                    </button>
+
+                    <button type="button" onclick="fillDemo('kabelo.mahlangu@uj.ac.za')"
+                        class="text-left p-2.5 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 transition">
+                        <div class="flex justify-between font-bold text-slate-900">
+                            <span>Kabelo Mahlangu (UJ)</span>
+                            <span class="text-slate-600">Lvl 2 • 52%</span>
+                        </div>
+                        <div class="text-slate-500">IT Support / Cloud • Evidence Attached</div>
+                    </button>
+
+                    <button type="button" onclick="fillDemo('lerato.mokoena@tut.ac.za')"
+                        class="text-left p-2.5 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 transition">
+                        <div class="flex justify-between font-bold text-slate-900">
+                            <span>Lerato Mokoena (TUT)</span>
+                            <span class="text-slate-500">Lvl 1 • 20%</span>
+                        </div>
+                        <div class="text-slate-500">New Candidate • Self-Declared</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Sign In Card -->
+    <div class="lg:col-span-5 bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8 lg:sticky lg:top-24">
+        <h2 class="text-xl font-bold text-slate-900 mb-1">Sign in to Path2Work</h2>
+        <p class="text-xs text-slate-500 mb-6">Click any demo card on the left or enter credentials manually.</p>
+
+        <form method="POST" action="{{ url_for('auth.login') }}" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Email Address</label>
+                <input id="emailInput" type="email" name="email" required placeholder="you@university.ac.za"
+                    class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-build">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Password</label>
+                <input id="passwordInput" type="password" name="password" required placeholder="••••••••"
+                    class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-build">
+            </div>
+            <button type="submit"
+                class="w-full py-2.5 px-4 rounded-lg bg-build hover:bg-indigo-600 text-white font-semibold text-sm shadow transition">
+                Sign In
+            </button>
+        </form>
+
+        <div class="mt-6 pt-5 border-t border-slate-100 text-center text-xs text-slate-500">
+            New to Path2Work?
+            <a href="{{ url_for('auth.register') }}" class="font-semibold text-build hover:underline ml-1">
+                Create a Candidate or Employer account
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function fillDemo(email) {
+    document.getElementById('emailInput').value = email;
+    document.getElementById('passwordInput').value = 'password123';
+}
+</script>
+{% endblock %}

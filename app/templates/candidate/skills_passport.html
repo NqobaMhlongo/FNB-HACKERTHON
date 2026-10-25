@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Skills Passport: {{ candidate.full_name }} | Path2Work{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8">
+    <div class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-800 relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-prove/20 border border-prove text-teal-300 text-xs font-bold uppercase tracking-wider">
+                    <span>✓ Path2Work Verifiable Skills Passport</span>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-tight">{{ candidate.full_name }}</h1>
+                <p class="text-sm text-slate-300">
+                    {{ candidate.institution }}
+                    {% if candidate.graduation_year %}• Graduation Cohort: {{ candidate.graduation_year }}{% endif %}
+                    • <span class="text-teal-300">{{ candidate.email }}</span>
+                </p>
+                <p class="text-xs text-slate-400 pt-1">
+                    Passport Verification ID: <code class="text-slate-200 bg-slate-800 px-2 py-0.5 rounded">P2W-ZA-{{ "%04d" | format(candidate.id) }}</code>
+                </p>
+            </div>
+
+            <div class="flex items-center space-x-5 bg-slate-800/90 border border-slate-700 rounded-2xl p-5">
+                <div class="text-center pr-5 border-r border-slate-700">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Readiness Score</div>
+                    <div class="text-4xl font-extrabold text-teal-400 mt-1">{{ passport.readiness_score }}<span class="text-lg text-slate-400">/100</span></div>
+                </div>
+                <div>
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Highest Trust Tier</div>
+                    <div class="text-lg font-extrabold text-white mt-0.5">Level {{ passport.highest_trust_level }} / 5</div>
+                    <span class="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded bg-match text-white">
+                        {{ passport.trust_level_label }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900">5-Tier Evidence Trust Meter</h2>
+                <p class="text-xs text-slate-500">Shows employers exactly how this candidate's claims were verified</p>
+            </div>
+            <span class="text-xs font-bold text-prove">Current Tier: Level {{ passport.highest_trust_level }}</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+            {% for tier in trust_tiers %}
+                {% set unlocked = passport.highest_trust_level >= tier.level %}
+                <div class="rounded-xl p-4 border-2 transition flex flex-col justify-between
+                    {% if passport.highest_trust_level == tier.level %}border-prove bg-teal-50/70 shadow-sm
+                    {% elif unlocked %}border-indigo-200 bg-indigo-50/40
+                    {% else %}border-slate-200 bg-slate-50 opacity-60{% endif %}">
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-extrabold uppercase tracking-wider
+                                {% if unlocked %}text-prove{% else %}text-slate-400{% endif %}">
+                                Level {{ tier.level }}
+                            </span>
+                            {% if unlocked %}
+                                <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-prove text-white">Verified ✓</span>
+                            {% else %}
+                                <span class="text-xs text-slate-400">Locked</span>
+                            {% endif %}
+                        </div>
+                        <div class="text-sm font-bold text-slate-900">{{ tier.name }}</div>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ tier.desc }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if passport.verified_skills %}
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <h2 class="text-lg font-bold text-slate-900">Verified Role Competencies</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for item in passport.verified_skills %}
+                <div class="p-4 rounded-xl border border-prove/30 bg-teal-50/30 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-wider text-prove">{{ item.pathway }}</span>
+                        <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-prove text-white">
+                            Score: {{ item.score }}/100
+                        </span>
+                    </div>
+                    <div class="text-sm font-bold text-slate-900">{{ item.challenge_title }}</div>
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                        {% for sk in item.skills %}
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-white border border-slate-200 text-slate-700">
+                                ✓ {{ sk }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="space-y-4">
+        <h2 class="text-lg font-bold text-slate-900">Inspectable WorkProof Evidence Cards</h2>
+        {% if submissions %}
+            {% for sub in submissions %}
+                <details class="group bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" {% if loop.first %}open{% endif %}>
+                    <summary class="cursor-pointer p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 transition">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-bold uppercase tracking-wider text-build">
+                                    {{ sub.challenge.pathway.title }}
+                                </span>
+                                <span class="text-xs px-2.5 py-0.5 rounded-full font-bold
+                                    {% if sub.status == 'verified' %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+                                    {{ sub.status | upper }}
+                                </span>
+                            </div>
+                            <h3 class="text-base font-extrabold text-slate-900 mt-1">{{ sub.challenge.title }}</h3>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="text-right">
+                                <div class="text-xs text-slate-500">Evidence Score</div>
+                                <div class="text-lg font-extrabold text-prove">{{ sub.evidence_score }}/100</div>
+                            </div>
+                            <span class="text-xs font-bold text-slate-500 group-open:rotate-180 transition-transform">▼</span>
+                        </div>
+                    </summary>
+
+                    <div class="p-6 border-t border-slate-200 space-y-5 bg-slate-50/50">
+                        {% if sub.readiness_feedback %}
+                            <div class="p-4 rounded-xl bg-white border border-slate-200 text-xs text-slate-700 leading-relaxed">
+                                <strong class="text-slate-900 block mb-1">Automated Verification Summary:</strong>
+                                {{ sub.readiness_feedback }}
+                            </div>
+                        {% endif %}
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-xl p-4 border-t-4 border-build shadow-sm space-y-2">
+                                <div class="text-xs font-extrabold uppercase tracking-wider text-build">1. BUILD Evidence</div>
+                                {% if sub.build_repo_url %}
+                                    <a href="{{ sub.build_repo_url }}" target="_blank" rel="noopener"
+                                       class="block text-xs font-mono text-indigo-600 hover:underline truncate">
+                                        {{ sub.build_repo_url }}
+                                    </a>
+                                {% endif %}
+                                <pre class="text-xs font-mono bg-slate-900 text-emerald-300 p-3 rounded-lg overflow-x-auto max-h-56">{{ sub.build_code_snippet or 'No snippet submitted.' }}</pre>
+                            </div>
+
+                            <div class="bg-white rounded-xl p-4 border-t-4 border-prove shadow-sm space-y-2">
+                                <div class="text-xs font-extrabold uppercase tracking-wider text-prove">2. EXPLAIN Reasoning</div>
+                                <p class="text-xs text-slate-700 whitespace-pre-line leading-relaxed">{{ sub.explain_notes or 'No explanation submitted.' }}</p>
+                            </div>
+
+                            <div class="bg-white rounded-xl p-4 border-t-4 border-match shadow-sm space-y-2">
+                                <div class="text-xs font-extrabold uppercase tracking-wider text-match">3. ADAPT Change Response</div>
+                                <p class="text-xs text-slate-700 font-mono whitespace-pre-line leading-relaxed">{{ sub.adapt_solution or 'No adaptation submitted.' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            {% endfor %}
+        {% else %}
+            <div class="bg-white rounded-xl border border-slate-200 p-6 text-center text-sm text-slate-500">
+                No WorkProof submissions recorded yet for this candidate.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

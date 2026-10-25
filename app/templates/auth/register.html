@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Create Account | Path2Work{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg border border-slate-200 p-6 sm:p-8">
+    <div class="mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-prove">Join the Verified Talent Ecosystem</span>
+        <h1 class="text-2xl font-extrabold text-slate-900 mt-1">Create your Path2Work Account</h1>
+        <p class="text-xs text-slate-500 mt-1">
+            Candidates use institutional emails (<code class="text-slate-700">.ac.za</code>) to accelerate Level 3 Source Verification.
+        </p>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.register') }}" class="space-y-4">
+        <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Account Role</label>
+            <div class="grid grid-cols-2 gap-3">
+                <label class="cursor-pointer border rounded-lg p-3 flex items-center space-x-2.5 hover:border-build">
+                    <input type="radio" name="role" value="candidate" checked onchange="toggleRoleFields(this.value)" class="text-build focus:ring-build">
+                    <div>
+                        <div class="text-sm font-bold text-slate-900">IT Candidate</div>
+                        <div class="text-xs text-slate-500">Student / Graduate</div>
+                    </div>
+                </label>
+                <label class="cursor-pointer border rounded-lg p-3 flex items-center space-x-2.5 hover:border-match">
+                    <input type="radio" name="role" value="employer" onchange="toggleRoleFields(this.value)" class="text-match focus:ring-match">
+                    <div>
+                        <div class="text-sm font-bold text-slate-900">Employer</div>
+                        <div class="text-xs text-slate-500">Hiring Manager / Talent</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Full Name</label>
+            <input type="text" name="full_name" required placeholder="e.g., Sipho Ndlovu"
+                class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-build">
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Email Address</label>
+            <input type="email" name="email" required placeholder="sipho@wits.ac.za"
+                class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-build">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="sm:col-span-2">
+                <label id="instLabel" class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
+                    University / TVET / Institution
+                </label>
+                <input type="text" name="institution" required placeholder="e.g., University of Johannesburg (UJ)"
+                    class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-build">
+            </div>
+            <div id="gradYearWrap">
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Grad Year</label>
+                <input type="number" name="graduation_year" value="2025" min="2020" max="2030"
+                    class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-build">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Password</label>
+            <input type="password" name="password" required placeholder="Minimum 6 characters"
+                class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-build">
+        </div>
+
+        <button type="submit"
+            class="w-full py-2.5 px-4 rounded-lg bg-prove hover:bg-teal-700 text-white font-semibold text-sm shadow transition">
+            Register &amp; Continue
+        </button>
+    </form>
+</div>
+
+<script>
+function toggleRoleFields(role) {
+    const instLabel = document.getElementById('instLabel');
+    const gradWrap = document.getElementById('gradYearWrap');
+    if (role === 'employer') {
+        instLabel.textContent = 'Company / Organization Name';
+        gradWrap.style.display = 'none';
+    } else {
+        instLabel.textContent = 'University / TVET / Institution';
+        gradWrap.style.display = 'block';
+    }
+}
+</script>
+{% endblock %}

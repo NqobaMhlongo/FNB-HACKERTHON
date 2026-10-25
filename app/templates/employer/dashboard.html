@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}Employer Talent Pipeline | Path2Work{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-lg">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-match text-white">
+                    Employer Pre-Screening Readiness Layer
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold mt-2">Verified Early-Career IT Pipeline</h1>
+                <p class="text-xs sm:text-sm text-slate-300 mt-1">
+                    Inspect real <strong>Build → Explain → Adapt</strong> WorkProof evidence before inviting graduates to your ATS or technical interviews.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-400">1. Total Candidates</div>
+                <div class="text-3xl font-extrabold text-white mt-1">{{ total_applicants }}</div>
+                <div class="text-xs text-slate-400 mt-1">Registered IT graduates</div>
+            </div>
+            <div class="bg-slate-800/90 border border-build/50 rounded-xl p-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-indigo-300">2. WorkProof Submitted</div>
+                <div class="text-3xl font-extrabold text-indigo-400 mt-1">{{ workproof_completed_count }}</div>
+                <div class="text-xs text-slate-400 mt-1">Completed 3-stage challenge</div>
+            </div>
+            <div class="bg-slate-800/90 border border-prove/50 rounded-xl p-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-teal-300">3. Pre-Qualified (Lvl 4+)</div>
+                <div class="text-3xl font-extrabold text-teal-400 mt-1">{{ prequalified_count }}</div>
+                <div class="text-xs text-slate-400 mt-1">Score ≥ 70 &amp; Source Verified</div>
+            </div>
+            <div class="bg-slate-800/90 border border-match/50 rounded-xl p-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-orange-300">4. Your Shortlist</div>
+                <div class="text-3xl font-extrabold text-orange-400 mt-1">{{ shortlisted_count }}</div>
+                <div class="text-xs text-slate-400 mt-1">Ready for interview / ATS</div>
+            </div>
+        </div>
+    </div>
+
+    <form method="GET" action="{{ url_for('employer.dashboard') }}"
+          class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">IT Role Pathway</label>
+            <select name="pathway" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-build">
+                <option value="">All IT Pathways</option>
+                {% for p in pathways %}
+                    <option value="{{ p.slug }}" {% if selected_pathway == p.slug %}selected{% endif %}>
+                        {{ p.title }} ({{ p.market_share_pct }}%)
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Minimum Trust Level</label>
+            <select name="min_trust" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-build">
+                <option value="1" {% if min_trust == 1 %}selected{% endif %}>Level 1+ (All Candidates)</option>
+                <option value="2" {% if min_trust == 2 %}selected{% endif %}>Level 2+ (Evidence Attached)</option>
+                <option value="3" {% if min_trust == 3 %}selected{% endif %}>Level 3+ (Source Verified)</option>
+                <option value="4" {% if min_trust == 4 %}selected{% endif %}>Level 4+ (Path2Work Assessed)</option>
+                <option value="5" {% if min_trust == 5 %}selected{% endif %}>Level 5 (Employer Verified)</option>
+            </select>
+        </div>
+
+        <div>
+            <div class="flex justify-between text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                <span>Min Evidence Score</span>
+                <span id="scoreVal" class="text-prove">{{ min_score }}/100</span>
+            </div>
+            <input type="range" name="min_score" min="0" max="95" step="5" value="{{ min_score }}"
+                   oninput="document.getElementById('scoreVal').textContent = this.value + '/100'"
+                   class="w-full accent-prove cursor-pointer">
+        </div>
+
+        <div class="flex space-x-2">
+            <button type="submit" class="flex-1 py-2 px-4 rounded-lg bg-build hover:bg-indigo-600 text-white text-sm font-semibold shadow transition">
+                Apply Filter
+            </button>
+            <a href="{{ url_for('employer.dashboard') }}" class="py-2 px-3 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-medium">
+                Reset
+            </a>
+        </div>
+    </form>
+
+    <div class="space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-slate-900">
+                Matching Candidates ({{ candidates | length }})
+            </h2>
+            <span class="text-xs text-slate-500">Sorted by Verified Readiness Score</span>
+        </div>
+
+        {% if candidates %}
+            <div class="grid grid-cols-1 gap-5">
+                {% for item in candidates %}
+                    {% set cand = item.user %}
+                    {% set passport = item.passport %}
+                    {% set sub = item.best_submission %}
+                    {% set sl = item.shortlist %}
+
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-prove/60 transition">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                            <div class="space-y-2 flex-1">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold
+                                        {% if passport.highest_trust_level >= 4 %}bg-prove text-white
+                                        {% elif passport.highest_trust_level == 3 %}bg-build text-white
+                                        {% else %}bg-slate-200 text-slate-700{% endif %}">
+                                        {{ passport.trust_level_label }}
+                                    </span>
+
+                                    {% if sl %}
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-orange-100 text-match border border-orange-300">
+                                            ★ {{ sl.status }}
+                                        </span>
+                                    {% endif %}
+
+                                    {% if sub and sub.challenge %}
+                                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-indigo-50 text-build border border-indigo-200">
+                                            {{ sub.challenge.pathway.title }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="flex items-baseline space-x-3">
+                                    <h3 class="text-xl font-extrabold text-slate-900">{{ cand.full_name }}</h3>
+                                    <span class="text-xs text-slate-500">
+                                        {{ cand.institution }} {% if cand.graduation_year %}({{ cand.graduation_year }}){% endif %}
+                                    </span>
+                                </div>
+
+                                {% if sub and sub.readiness_feedback %}
+                                    <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200 leading-relaxed">
+                                        {{ sub.readiness_feedback }}
+                                    </p>
+                                {% else %}
+                                    <p class="text-xs text-slate-400 italic">
+                                        Candidate has registered their profile (Level 1) and is preparing their first WorkProof submission.
+                                    </p>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4 lg:w-64 shrink-0 border-t lg:border-t-0 pt-4 lg:pt-0 border-slate-100">
+                                <div class="text-left lg:text-right">
+                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Role-Fit Evidence Score</div>
+                                    <div class="text-3xl font-extrabold {% if passport.readiness_score >= 70 %}text-prove{% else %}text-slate-700{% endif %}">
+                                        {{ passport.readiness_score }}<span class="text-sm text-slate-400 font-normal">/100</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                                    <a href="{{ url_for('employer.candidate_evidence', user_id=cand.id) }}"
+                                       class="flex-1 sm:flex-initial text-center px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition">
+                                        Inspect WorkProof →
+                                    </a>
+
+                                    <form method="POST" action="{{ url_for('employer.shortlist_candidate', candidate_id=cand.id) }}">
+                                        <input type="hidden" name="next_url" value="{{ request.full_path }}">
+                                        <input type="hidden" name="status" value="shortlisted">
+                                        <button type="submit"
+                                            class="px-3.5 py-2 rounded-lg text-xs font-bold border transition
+                                            {% if sl %}bg-orange-50 border-match text-match{% else %}border-slate-300 text-slate-700 hover:border-match hover:text-match{% endif %}">
+                                            {% if sl %}★ Shortlisted{% else %}+ Shortlist{% endif %}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center space-y-2">
+                <div class="text-base font-bold text-slate-800">No candidates match your current filter criteria</div>
+                <p class="text-xs text-slate-500">Try lowering the Minimum Trust Level or Minimum Evidence Score slider.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
